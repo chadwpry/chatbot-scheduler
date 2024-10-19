@@ -1,9 +1,7 @@
-import { drizzle } from 'drizzle-orm/node-postgres';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
 import { env } from '@/lib/env.mjs';
 
-export const db = drizzle({
-    connection: {
-        connectionString: env.DATABASE_URL,
-        ssl: true,
-    }
-});
+const client = postgres(env.DATABASE_URL);
+
+export const db = drizzle(client);

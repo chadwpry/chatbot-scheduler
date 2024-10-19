@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "seed": "tsx src/db/seed.ts",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -16,8 +17,10 @@
     "db:check": "drizzle-kit check"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^0.0.68",
     "@radix-ui/react-icons": "^1.3.0",
     "@t3-oss/env-nextjs": "^0.11.1",
+    "ai": "^3.4.16",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "dotenv": "^16.4.5",
