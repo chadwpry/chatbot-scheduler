@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a simple scheduling assistant that can be used to schedule appointments. It is built with Next.js, Shadcn/UI, Postgres, Drizzle, Zod, Winston, OpenAI, AI SDK from Nextjs, and a few other odds and ends.
+This is a simple scheduling assistant that can be used to schedule booking windows. It is built with Next.js, Shadcn, Postgres, Drizzle, Zod, Winston, OpenAI, AI SDK from Nextjs, and a few other odds and ends.
 
 The primary goal of this project is to learn how to build a scheduling assistant. The interface to the assistant is a chat interface that allows the user to ask about current booking windows and scheduling a booking window.
 
@@ -11,10 +11,6 @@ The primary goal of this project is to learn how to build a scheduling assistant
 *Notes on docker-compose*
 
 I've created a Dockerfile and a docker-compose.yaml file to make it easier to setup the app. It should be as simple as running `docker compose up` and it will build the app and run it in a container.
-
-However, I noticed the container is not talking to the database. I assume this has to do with the DATABASE_URL environment variable in the .env file not referencing host.docker.internal or similar. I've not had a chance to test it throughly, so beware there be dragons.
-
-In the meantime, starting the database via docker-compose and running the app via pnpm run dev, does work just fine.
 
 ### Configuration
 
@@ -43,7 +39,7 @@ pnpm run seed
 Finally start your local application with the the following.
 
 ```bash
-pnpm run dev
+docker-compose up app
 ```
 
 ### Viewing the Application

@@ -1,5 +1,8 @@
 # Use a Node.js base image
-FROM node:18-slim
+FROM node:20
+
+RUN apt-get update -y
+RUN apt-get install iputils-ping -y
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
