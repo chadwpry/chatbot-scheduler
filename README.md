@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Scheduling Assistant
+
+## Overview
+
+This is a simple scheduling assistant that can be used to schedule appointments. It is built with Next.js, Shadcn/UI, Postgres, Drizzle, Zod, Winston, OpenAI, AI SDK from Nextjs, and a few other odds and ends.
+
+The primary goal of this project is to learn how to build a scheduling assistant. The interface to the assistant is a chat interface that allows the user to ask about current booking windows and scheduling a booking window.
 
 ## Getting Started
 
-First, run the development server:
+*Notes on docker-compose*
+
+I've created a Dockerfile and a docker-compose.yaml file to make it easier to setup the app. It should be as simple as running `docker compose up` and it will build the app and run it in a container.
+
+However, I noticed the container is not talking to the database. I assume this has to do with the DATABASE_URL environment variable in the .env file not referencing host.docker.internal or similar. I've not had a chance to test it throughly, so beware there be dragons.
+
+In the meantime, starting the database via docker-compose and running the app via pnpm run dev, does work just fine.
+
+### Configuration
+
+1. Copy the .env.example file to .env
+2. Add a DATABASE_URL (the default should work with docker-compose)
+3. Supply an OpenAI API key
+
+### Database
+
+Use the command below to start the database.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+docker-compose up db
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Seeding Booking Windows
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Seed your database with a set of predefined booking windows. They can be found in `/src/db/seed.json`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+pnpm run seed
+```
 
-## Learn More
+### Application
 
-To learn more about Next.js, take a look at the following resources:
+Finally start your local application with the the following.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+pnpm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Viewing the Application
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Open [http://localhost:3000](http://localhost:3000) with your browser to view the chat interface. A text input can be found at the bottom of the page for you to ask questions.
