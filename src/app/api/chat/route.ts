@@ -1,7 +1,7 @@
 import { openai } from "@ai-sdk/openai";
 import { convertToCoreMessages, streamText, tool } from "ai";
 import { z } from "zod";
-import { findBookingWindows } from "@/ai/bookingWindows";
+import { findBookingWindows, scheduleBooking } from "@/ai/bookingWindows";
 
 export const maxDuration = 300;
 
@@ -22,7 +22,15 @@ export async function POST(request: Request) {
                 }),
                 execute: async ({ question }) => findBookingWindows(question),
             }),
+            scheduleBooking: tool({
+                description: "schedule a booking window for a user",
+                parameters: z.object({
+                    bookingWindowId: z.string().describe("the id of the booking window to schedule"),
+                }),
+                execute: async ({ bookingWindowId }) => scheduleBooking(bookingWindowId),
+            }),
         },
+        maxSteps: 2,
     });
 
     return result.toDataStreamResponse();

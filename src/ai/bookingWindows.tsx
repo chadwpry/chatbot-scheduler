@@ -1,9 +1,13 @@
 import { embed } from "ai";
 import { openai } from "@ai-sdk/openai";
+import { cosineDistance, eq, sql } from "drizzle-orm";
+import { format } from "date-fns";
+
 import { db } from "@/db";
 import { FullBookingWindowParams } from "@/db/schema";
-import { cosineDistance, eq, sql } from "drizzle-orm";
 import { bookingWindows, bookingWindowEmbeddings } from "@/db/schema";
+import { sendMessage } from "@/lib/notifierService";
+
 
 const embeddingModel = openai.embedding("text-embedding-ada-002");
 
@@ -39,7 +43,14 @@ export const findBookingWindows = async (query: string) => {
     )})`;
 
     const bookingWindowsEmbbeddings = await db
-        .select({ name: bookingWindowEmbeddings.content, similarity})
+        .select({
+            id: bookingWindows.id,
+            startDateTime: bookingWindows.startDateTime,
+            endDateTime: bookingWindows.endDateTime,
+            weekday: bookingWindows.weekDay,
+            content: bookingWindowEmbeddings.content,
+            similarity
+        })
         .from(bookingWindowEmbeddings)
         .leftJoin(bookingWindows, eq(bookingWindowEmbeddings.bookingWindowId, bookingWindows.id))
         .where(sql`${similarity} > 0.5 and booking_windows.availability_status = 'available'`)
@@ -47,4 +58,23 @@ export const findBookingWindows = async (query: string) => {
         .limit(5);
 
     return bookingWindowsEmbbeddings;
+}
+
+export const scheduleBooking = async (bookingWindowId: string) => {
+    const bookingWindow = await db.select().from(bookingWindows).where(eq(bookingWindows.id, bookingWindowId));
+
+    await db
+        .update(bookingWindows)
+        .set({ availabilityStatus: "reserved" })
+        .where(eq(bookingWindows.id, bookingWindowId));
+
+    await sendMessage(`Booking scheduled successfully!
+    booked at: ${format(new Date(), "yyyy-MM-dd HH:mm:ss")}
+    booking window:
+        id: ${bookingWindow[0].id}
+        weekday: ${bookingWindow[0].weekDay}
+        start: ${format(bookingWindow[0].startDateTime, "yyyy-MM-dd HH:mm:ss")}
+        end: ${format(bookingWindow[0].endDateTime, "yyyy-MM-dd HH:mm:ss")}`)
+
+    return bookingWindow[0];
 }
