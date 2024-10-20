@@ -2,6 +2,16 @@ version: '3.8'
 
 # vector storage using pgvector on top of postgres
 services:
+  app:
+    build: .
+    image: node:18
+    ports:
+      - 3000:3000
+    volumes:
+      - app_log:/app/logs
+    # environment:
+    #   - NODE_ENV=production
+
   db:
     image: pgvector/pgvector:pg15
     environment:
@@ -15,5 +25,4 @@ services:
 
 volumes:
   postgres_data:
-
-
+  app_log:
