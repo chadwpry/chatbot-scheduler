@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS "booking_window_embeddings" (
 	"id" varchar(191) PRIMARY KEY NOT NULL,
 	"booking_window_id" varchar(191),
 	"content" text NOT NULL,
-	"embedding" vector(1536) NOT NULL
+	"embedding" vector(768) NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "booking_windows" (

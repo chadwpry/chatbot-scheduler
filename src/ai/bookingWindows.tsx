@@ -1,5 +1,6 @@
+import { env } from "@/lib/env.mjs";
 import { embed } from "ai";
-import { openai } from "@ai-sdk/openai";
+import { createOllama } from "ollama-ai-provider";
 import { cosineDistance, eq, sql } from "drizzle-orm";
 import { format } from "date-fns";
 
@@ -8,8 +9,9 @@ import { FullBookingWindowParams } from "@/db/schema";
 import { bookingWindows, bookingWindowEmbeddings } from "@/db/schema";
 import { sendMessage } from "@/lib/notifierService";
 
+const ollama = createOllama({ baseURL: env.OLLAMA_BASE_URL });
 
-const embeddingModel = openai.embedding("text-embedding-ada-002");
+const embeddingModel = ollama.textEmbeddingModel("nomic-embed-text");
 
 export const generateBookingWindowEmbedding = async (bookingWindow: FullBookingWindowParams): Promise<{embedding: number[], content: string}> => {
     const input = `

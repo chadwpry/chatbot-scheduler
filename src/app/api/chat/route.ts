@@ -1,15 +1,18 @@
-import { openai } from "@ai-sdk/openai";
+import { env } from "@/lib/env.mjs";
+import { createOllama } from "ollama-ai-provider";
 import { convertToCoreMessages, streamText, tool } from "ai";
 import { z } from "zod";
 import { findBookingWindows, scheduleBooking } from "@/ai/bookingWindows";
 
 export const maxDuration = 300;
 
+const ollama = createOllama({ baseURL: env.OLLAMA_BASE_URL });
+
 export async function POST(request: Request) {
     const { messages } = await request.json();
 
     const result = await streamText({
-        model: openai("gpt-4o"),
+        model: ollama("llama3.2"),
         system: `You are a helpful assistant that can help with scheduling appointments.
         Only respond to questions using information from tool calls.
         If no relevant information is found in the tool calls, respond, "Sorry, I cannot find any available booking windows."`,

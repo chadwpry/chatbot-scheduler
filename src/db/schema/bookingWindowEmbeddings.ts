@@ -14,7 +14,7 @@ export const bookingWindowEmbeddings = pgTable(
       { onDelete: 'cascade' },
     ),
     content: text('content').notNull(),
-    embedding: vector('embedding', { dimensions: 1536 }).notNull(),
+    embedding: vector('embedding', { dimensions: 768 }).notNull(),
   },
   (table) => ({
     embeddingIndex: index('embedding_index').using(
