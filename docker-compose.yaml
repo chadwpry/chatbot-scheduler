@@ -1,3 +1,10 @@
+x-ollama: &service-ollama
+  image: ollama/ollama:latest
+  container_name: ollama
+  restart: unless-stopped
+  volumes:
+    - ollama_data:/root/.ollama
+
 # vector storage using pgvector on top of postgres
 services:
   app:
@@ -14,17 +21,23 @@ services:
       POSTGRES_DB: scheduler
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-    ports:
-      - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  # ollama:
-  #   image: ollama/ollama:latest
-  #   ports:
-  #     - 11434:11434
-  #   volumes:
-  #     - ollama_data:/root/.ollama
+  ollama-cpu:
+    profiles: ["cpu"]
+    <<: *service-ollama
+
+  ollama-gpu:
+    profiles: ["gpu-nvidia"]
+    <<: *service-ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
 
 volumes:
   postgres_data:
