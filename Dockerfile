@@ -15,7 +15,7 @@ WORKDIR /app
 
 # Copy package.json and package-lock.json
 COPY package.json pnpm-lock.yaml ./
-COPY .env.local .env
+COPY .env.production .env
 
 # Install dependencies
 RUN pnpm install
